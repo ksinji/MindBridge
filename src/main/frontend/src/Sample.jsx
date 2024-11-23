@@ -30,8 +30,7 @@ function Sample() {
                     Button 3
                 </S.Button>
             </S.ButtonContainer>
-
-            {message && <S.Message>{message}</S.Message>}
+            <S.Message>{message}</S.Message>
         </S.Container>
     );
 }
