@@ -1,39 +1,34 @@
-//Sample.jsx
-import React, { useState } from "react";
-import axios from "axios";
+import React from "react";
 import * as S from "./style";
 
-function Sample() {
-    const [message, setMessage] = useState("");
+const pointsData = [
+    { date: "2024.11.12", description: "피부과 1회 이용권 구매", points: -70000 },
+    { date: "2024.11.10", description: "주간 걸음수 목표 달성", points: 20000 },
+    { date: "2024.11.07", description: "모임 참석 보너스", points: 5000 },
+    { date: "2024.11.05", description: "상점에서 상품권 구매", points: -30000 },
+    { date: "2024.11.03", description: "하루 4만 걸음 달성", points: 100 },
+];
 
-    // 버튼 클릭 핸들러
-    const handleButtonClick = async (action) => {
-        try {
-            const response = await axios.get(`http://localhost:8080/api/${action}`);
-            setMessage(response.data); // 백엔드에서 반환된 메시지를 상태로 저장
-        } catch (error) {
-            console.error("Error:", error);
-            setMessage("오류 발생");
-        }
-    };
+const PointsHistory = () => {
+    const totalPoints = pointsData.reduce((sum, item) => sum + item.points, 0);
 
     return (
         <S.Container>
-            <S.Title>Sample Page</S.Title>
-            <S.ButtonContainer>
-                <S.Button onClick={() => handleButtonClick("주간 분석")}>
-                    Button 1
-                </S.Button>
-                <S.Button onClick={() => handleButtonClick("포인트 내역")}>
-                    Button 2
-                </S.Button>
-                <S.Button onClick={() => handleButtonClick("스토어")}>
-                    Button 3
-                </S.Button>
-            </S.ButtonContainer>
-            <S.Message>{message}</S.Message>
+            <S.Title>포인트 내역</S.Title>
+            <S.List>
+                {pointsData.map((item, index) => (
+                    <S.ListItem key={index} isPositive={item.points > 0}>
+                        <S.Date>{item.date}</S.Date>
+                        <S.Description>{item.description}</S.Description>
+                        <S.Points isPositive={item.points > 0}>
+                            {item.points > 0 ? `+${item.points}pt` : `${item.points}pt`}
+                        </S.Points>
+                    </S.ListItem>
+                ))}
+            </S.List>
+            <S.Message>현재 보유 포인트: {totalPoints}pt</S.Message>
         </S.Container>
     );
-}
+};
 
-export default Sample;
+export default PointsHistory;
