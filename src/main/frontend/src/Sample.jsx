@@ -1,37 +1,30 @@
-//Sample.jsx
-import React, { useState } from "react";
-import axios from "axios";
+// Sample.jsx
+import React from "react";
+
+// React Router의 useNavigate 추가 (수정된 부분)
+import { useNavigate } from "react-router-dom";
+
 import * as S from "./style";
 
 function Sample() {
-    const [message, setMessage] = useState("");
-
-    // 버튼 클릭 핸들러
-    const handleButtonClick = async (action) => {
-        try {
-            const response = await axios.get(`http://localhost:8080/api/${action}`);
-            setMessage(response.data); // 백엔드에서 반환된 메시지를 상태로 저장
-        } catch (error) {
-            console.error("Error:", error);
-            setMessage("오류 발생");
-        }
-    };
+    // useNavigate 훅 사용 (수정된 부분)
+    const navigate = useNavigate();
 
     return (
         <S.Container>
-            <S.Title>Sample Page</S.Title>
+            <S.Title>MindBridge</S.Title>
             <S.ButtonContainer>
-                <S.Button onClick={() => handleButtonClick("주간 분석")}>
-                    Button 1
+                {/* 각 버튼 클릭 시 페이지 전환 (수정된 부분) */}
+                <S.Button onClick={() => navigate("/weekly-analysis")}>
+                    📊 주간 분석    
                 </S.Button>
-                <S.Button onClick={() => handleButtonClick("포인트 내역")}>
-                    Button 2
+                <S.Button onClick={() => navigate("/points-history")}>
+                    💳 포인트 내역
                 </S.Button>
-                <S.Button onClick={() => handleButtonClick("스토어")}>
-                    Button 3
+                <S.Button onClick={() => navigate("/store")}>
+                    🛒 스토어
                 </S.Button>
             </S.ButtonContainer>
-            <S.Message>{message}</S.Message>
         </S.Container>
     );
 }

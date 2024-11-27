@@ -1,33 +1,44 @@
 import React from "react";
-import * as S from "./style";
-
-const pointsData = [
-    { date: "2024.11.12", description: "피부과 1회 이용권 구매", points: -70000 },
-    { date: "2024.11.10", description: "주간 걸음수 목표 달성", points: 20000 },
-    { date: "2024.11.07", description: "모임 참석 보너스", points: 5000 },
-    { date: "2024.11.05", description: "상점에서 상품권 구매", points: -30000 },
-    { date: "2024.11.03", description: "하루 4만 걸음 달성", points: 100 },
-];
+import { useNavigate } from "react-router-dom"; // useNavigate 추가
 
 const PointsHistory = () => {
-    const totalPoints = pointsData.reduce((sum, item) => sum + item.points, 0);
+    const navigate = useNavigate(); // navigate 설정
+    const totalPoints = 11000; // 현재 보유 포인트
+    const pointsData = [
+        { date: "24.10.22", description: "헬스장 pt 구매", points: -1000 },
+        { date: "24.10.21", description: "4만 걸음 달성", points: +200 },
+        { date: "24.10.20", description: "주간 걸음수 목표 달성", points: +500 },
+        { date: "24.10.19", description: "피부과 이용권 구매", points: -7000 },
+    ];
 
     return (
-        <S.Container>
-            <S.Title>포인트 내역</S.Title>
-            <S.List>
-                {pointsData.map((item, index) => (
-                    <S.ListItem key={index} isPositive={item.points > 0}>
-                        <S.Date>{item.date}</S.Date>
-                        <S.Description>{item.description}</S.Description>
-                        <S.Points isPositive={item.points > 0}>
-                            {item.points > 0 ? `+${item.points}pt` : `${item.points}pt`}
-                        </S.Points>
-                    </S.ListItem>
-                ))}
-            </S.List>
-            <S.Message>현재 보유 포인트: {totalPoints}pt</S.Message>
-        </S.Container>
+        <div style={{ padding: "20px", fontFamily: "Arial, sans-serif", lineHeight: "1.6" }}>
+            <h1>💳 포인트 내역</h1>
+            <hr />
+            <p>현재 포인트: {totalPoints}pt</p>
+            <hr />
+            {pointsData.map((item, index) => (
+                <p key={index}>
+                    {item.date} : {item.description} {item.points > 0 ? `+${item.points}pt` : `${item.points}pt`}
+                </p>
+            ))}
+            <hr />
+            <button
+                onClick={() => navigate(-1)} // 이전 페이지로 이동
+                style={{
+                    marginTop: "20px",
+                    padding: "10px 20px",
+                    fontSize: "16px",
+                    color: "white",
+                    backgroundColor: "#007bff",
+                    border: "none",
+                    borderRadius: "5px",
+                    cursor: "pointer",
+                }}
+            >
+                돌아가기
+            </button>
+        </div>
     );
 };
 
