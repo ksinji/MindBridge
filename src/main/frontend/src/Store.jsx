@@ -28,14 +28,17 @@ const Store = () => {
 
     const handlePurchase = async (item) => {
         try {
-            await axios.post(`http://localhost:8080/api/store/purchase?userId=${userId}&itemId=${item.id}`);
+            // 사용자 ID와 아이템 ID를 올바르게 전달
+            const response = await axios.post(`http://localhost:8080/api/store/purchase?userId=${userId}&itemId=${item.id}`);
             alert(`${item.name}을(를) 구매했습니다!`);
             setUserPoints((prevPoints) => prevPoints - item.price); // 포인트 차감
         } catch (error) {
+            // 서버에서 반환한 오류 메시지 확인
             const errorMessage = error.response?.data?.message || "알 수 없는 오류";
             alert("구매에 실패했습니다: " + errorMessage);
         }
     };
+
 
     return (
         <S.Container>
