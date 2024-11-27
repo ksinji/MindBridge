@@ -23,7 +23,7 @@ export const ButtonContainer = styled.div`
   flex-direction: row;
   align-items: center;
   justify-content: center;
-  margin-top: 20px; /* 수정: 컨테이너 간 여백 */
+  margin-top: 20px;
 `;
 
 
@@ -49,13 +49,13 @@ export const PointItem = styled.p`
 `;
 
 export const TransactionDate = styled.span`
-  color: #555; /* 날짜 색상 */
-  margin-left: 50px; /* 날짜와 다른 내용 간격 조정 */
+  color: #555;
+  margin-left: 50px;
 `;
 
 export const PointDescription = styled.span`
-  flex: 1; /* 남은 공간을 차지하도록 설정 */
-  padding: 0 60px; /* 내용과 간격 조정 */
+  flex: 1; 
+  padding: 0 60px;
   color: black;
   font-size: 20px;
 `;
@@ -93,6 +93,43 @@ export const Button = styled.button`
 
 export const HorizontalLine = styled.hr`
   width: 100%;
-  border: 1px solid #ccc; /* 가로선 색상 */
-  margin: 20px 0; /* 가로선 위아래 여백 */
+  border: 1px solid #ccc;
+  margin: 20px 0; 
+`;
+
+
+export const ItemContainer = styled.div`
+  margin-bottom: 15px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between; 
+  line-height: 1.5; 
+  width: 90%;
+`;
+
+export const ItemName = styled.span`
+  margin-right: 30px;
+  font-size: 20px;
+  flex: 1; 
+`;
+
+export const ItemPrice = styled.span`
+  color: #4169E1; 
+  font-size: 20px;
+  font-weight: bold;
+  margin-right: 30px;
+`;
+
+export const PurchaseButton = styled.button`
+    margin-left: 10px;
+    padding: 5px 10px;
+    background-color: ${props => (props.disabled ? "#888" : "#4169E1")};
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: ${props => (props.disabled ? "not-allowed" : "pointer")};
+    
+    &:hover {
+        background-color: ${props => (props.disabled ? "#ccc" : "#475a91")};
+    }
 `;

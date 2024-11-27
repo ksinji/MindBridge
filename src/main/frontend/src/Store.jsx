@@ -1,71 +1,69 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom"; // useNavigate 추가
+import axios from "axios"; // Axios 임포트
+import * as S from "./style.jsx"; // 스타일 파일 임포트
 
 const Store = () => {
-    const [userPoints, setUserPoints] = useState(1000); // 현재 보유 포인트
+    const [userPoints, setUserPoints] = useState(0); // 현재 보유 포인트
+    const [storeItems, setStoreItems] = useState([]); // 상품 목록
     const navigate = useNavigate(); // navigate 설정
+    const userId = 1; // 사용자 ID, 실제 값으로 대체 가능
 
-    const storeItems = [
-        { id: 1, name: "헬스장 pt", price: 2000 },
-        { id: 2, name: "올리브영 상품권", price: 1000 },
-        { id: 3, name: "커피 쿠폰", price: 500 },
-        { id: 4, name: "무료 PT 이용권", price: 3000 },
-    ];
+    useEffect(() => {
+        // 상품 목록 및 사용자 포인트 조회
+        const fetchStoreData = async () => {
+            try {
+                const response = await axios.get(`http://localhost:8080/api/store?userId=${userId}`);
+                setStoreItems(response.data.products || []); // 상품 목록 저장
+                setUserPoints(response.data.userPoint || 0); // 사용자 포인트 저장
+            } catch (error) {
+                console.error("스토어 데이터를 가져오는 데 실패했습니다:", error);
+                setStoreItems([]);
+                setUserPoints(0);
+            }
+        };
 
-    const handlePurchase = (item) => {
-        if (userPoints >= item.price) {
-            setUserPoints(userPoints - item.price); // 포인트 차감
+        fetchStoreData();
+    }, [userId]);
+
+    const handlePurchase = async (item) => {
+        try {
+            // 사용자 ID와 아이템 ID를 올바르게 전달
+            const response = await axios.post(`http://localhost:8080/api/store/purchase?userId=${userId}&itemId=${item.id}`);
             alert(`${item.name}을(를) 구매했습니다!`);
-        } else {
-            alert("포인트가 부족합니다."); // 포인트 부족 알림
+            setUserPoints((prevPoints) => prevPoints - item.price); // 포인트 차감
+        } catch (error) {
+            // 서버에서 반환한 오류 메시지 확인
+            const errorMessage = error.response?.data?.message || "알 수 없는 오류";
+            alert("구매에 실패했습니다: " + errorMessage);
         }
     };
 
+
     return (
-        <div style={{ padding: "20px", fontFamily: "Arial, sans-serif", lineHeight: "1.6" }}>
-            <h1>🛒 스토어</h1>
-            <hr />
-            <p>현재 포인트: {userPoints}pt</p>
-            <hr />
-            {storeItems.map((item) => (
-                <div key={item.id} style={{ marginBottom: "10px" }}>
-                    <span>
-                        {item.name} : {item.price}pt
-                    </span>
-                    <button
-                        onClick={() => handlePurchase(item)}
-                        style={{
-                            marginLeft: "10px",
-                            padding: "5px 10px",
-                            backgroundColor: userPoints >= item.price ? "#28a745" : "#ccc",
-                            color: "white",
-                            border: "none",
-                            borderRadius: "5px",
-                            cursor: userPoints >= item.price ? "pointer" : "not-allowed",
-                        }}
-                        disabled={userPoints < item.price} // 포인트 부족 시 버튼 비활성화
-                    >
-                        구매
-                    </button>
-                </div>
-            ))}
-            <hr />
-            <button
-                onClick={() => navigate(-1)} // 이전 페이지로 이동
-                style={{
-                    marginTop: "20px",
-                    padding: "10px 20px",
-                    fontSize: "16px",
-                    color: "white",
-                    backgroundColor: "#007bff",
-                    border: "none",
-                    borderRadius: "5px",
-                    cursor: "pointer",
-                }}
-            >
-                돌아가기
-            </button>
-        </div>
+        <S.Container>
+            <S.Title>🛒 스토어</S.Title>
+            <S.Message>현재 포인트: {userPoints}pt</S.Message>
+            <S.HorizontalLine />
+            {storeItems.length > 0 ? (
+                storeItems.map((item, index) => (
+                    <S.ItemContainer key={index}>
+                        <S.ItemName>{item.name}</S.ItemName>
+                        <S.ItemPrice>{item.price}pt</S.ItemPrice>
+                        <S.PurchaseButton
+                            onClick={() => handlePurchase(item)}
+                            disabled={userPoints < item.price} // 포인트 부족 시 버튼 비활성화
+                        >
+                            구매
+                        </S.PurchaseButton>
+                    </S.ItemContainer>
+                ))
+            ) : (
+                <S.Message>상품이 없습니다.</S.Message> // 상품이 없을 경우 표시
+            )}
+            <S.HorizontalLine />
+            <S.Button onClick={() => navigate(-1)}>돌아가기</S.Button>
+        </S.Container>
     );
 };
 
