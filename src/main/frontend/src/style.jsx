@@ -96,3 +96,38 @@ export const HorizontalLine = styled.hr`
   border: 1px solid #ccc; /* 가로선 색상 */
   margin: 20px 0; /* 가로선 위아래 여백 */
 `;
+
+export const ItemContainer = styled.div`
+  padding: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between; /* 양 끝으로 정렬 */
+  width: 90%; /* 전체 너비 사용 */
+`;
+
+export const ItemName = styled.span`
+  margin-right: 30px; /* 이름과 가격 간격 조정 */
+  font-size: 20px;
+  flex: 1; /* 남은 공간을 차지하도록 설정 */
+`;
+
+export const ItemPrice = styled.span`
+  color: #4169E1; /* 가격 색상 설정 */
+  font-size: 20px;
+  font-weight: bold;
+  margin-right: 30px; /* 가격과 버튼 간격 조정 */
+`;
+
+export const PurchaseButton = styled.button`
+  padding: 5px 10px;
+  background-color: ${props => (props.disabled ? "#ccc" : "#4169E1")};
+  color: white;
+  border: none;
+  font-size: 16px;
+  border-radius: 8px;
+  cursor: ${props => (props.disabled ? "not-allowed" : "pointer")};
+  
+  &:hover {
+    background-color: ${props => (props.disabled ? "#ccc" : "#546491")};
+  }
+`;
