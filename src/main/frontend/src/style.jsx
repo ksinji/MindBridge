@@ -48,9 +48,14 @@ export const PointItem = styled.p`
   font-size: 16px;
 `;
 
+export const TransactionDate = styled.span`
+  color: #555; /* 날짜 색상 */
+  margin-left: 50px; /* 날짜와 다른 내용 간격 조정 */
+`;
+
 export const PointDescription = styled.span`
   flex: 1; /* 남은 공간을 차지하도록 설정 */
-  padding: 0 40px; /* 내용과 간격 조정 */
+  padding: 0 60px; /* 내용과 간격 조정 */
   color: black;
   font-size: 20px;
 `;

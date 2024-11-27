@@ -46,6 +46,9 @@ const PointsHistory = () => {
                                 <S.TransactionType type={item.transactionType}>
                                     {isPurchase ? "구매" : "적립"}
                                 </S.TransactionType>
+                                <S.TransactionDate>
+                                    {new Date(item.createdAt).toLocaleDateString()} {/* createdAt 사용 */}
+                                </S.TransactionDate>
                                 <S.PointDescription>
                                     {item.transactionDescription}
                                 </S.PointDescription>
