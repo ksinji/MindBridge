@@ -1,44 +1,70 @@
-import React from "react";
-import { useNavigate } from "react-router-dom"; // useNavigate 추가
+import React, { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
+import axios from "axios";
+import * as S from "./style.jsx"; // 스타일 파일 경로 확인
 
 const PointsHistory = () => {
-    const navigate = useNavigate(); // navigate 설정
-    const totalPoints = 11000; // 현재 보유 포인트
-    const pointsData = [
-        { date: "24.10.22", description: "헬스장 pt 구매", points: -1000 },
-        { date: "24.10.21", description: "4만 걸음 달성", points: +200 },
-        { date: "24.10.20", description: "주간 걸음수 목표 달성", points: +500 },
-        { date: "24.10.19", description: "피부과 이용권 구매", points: -7000 },
-    ];
+    const navigate = useNavigate();
+    const [currentPoints, setCurrentPoints] = useState(0);
+    const [pointsData, setPointsData] = useState([]);
+    const [loading, setLoading] = useState(true);
+    const userId = 1; // 사용자 ID, 실제 값으로 대체 가능
+
+    useEffect(() => {
+        const fetchPointsData = async () => {
+            try {
+                const response = await axios.get(`http://localhost:8080/api/point?userId=${userId}`);
+                setPointsData(response.data.pointHistories || []);
+                setCurrentPoints(response.data.currentPoints || 0);
+            } catch (error) {
+                console.error("포인트 내역을 가져오는 데 실패했습니다:", error);
+            } finally {
+                setLoading(false);
+            }
+        };
+
+        fetchPointsData();
+    }, [userId]);
+
+    if (loading) {
+        return <S.Message>로딩 중...</S.Message>;
+    }
 
     return (
-        <div style={{ padding: "20px", fontFamily: "Arial, sans-serif", lineHeight: "1.6" }}>
-            <h1>💳 포인트 내역</h1>
-            <hr />
-            <p>현재 포인트: {totalPoints}pt</p>
-            <hr />
-            {pointsData.map((item, index) => (
-                <p key={index}>
-                    {item.date} : {item.description} {item.points > 0 ? `+${item.points}pt` : `${item.points}pt`}
-                </p>
-            ))}
-            <hr />
-            <button
-                onClick={() => navigate(-1)} // 이전 페이지로 이동
-                style={{
-                    marginTop: "20px",
-                    padding: "10px 20px",
-                    fontSize: "16px",
-                    color: "white",
-                    backgroundColor: "#007bff",
-                    border: "none",
-                    borderRadius: "5px",
-                    cursor: "pointer",
-                }}
-            >
-                돌아가기
-            </button>
-        </div>
+        <S.Container>
+            <S.Title>💳 포인트 내역</S.Title>
+            <S.Message>현재 포인트: {currentPoints}pt</S.Message>
+            <S.HorizontalLine />
+            <S.PointsList>
+                {pointsData.length > 0 ? (
+                    pointsData.map((item, index) => {
+                        const isPurchase = item.transactionType === "purchase";
+                        const pointDisplay = isPurchase ? -item.points : item.points;
+
+                        return (
+                            <S.PointItem key={index}>
+                                <S.TransactionType type={item.transactionType}>
+                                    {isPurchase ? "구매" : "적립"}
+                                </S.TransactionType>
+                                <S.TransactionDate>
+                                    {new Date(item.createdAt).toLocaleDateString()} {/* createdAt 사용 */}
+                                </S.TransactionDate>
+                                <S.PointDescription>
+                                    {item.transactionDescription}
+                                </S.PointDescription>
+                                <S.PointValue type={item.transactionType}>
+                                    {pointDisplay > 0 ? `+${pointDisplay}pt` : `${pointDisplay}pt`}
+                                </S.PointValue>
+                            </S.PointItem>
+                        );
+                    })
+                ) : (
+                    <S.Message>포인트 내역이 없습니다.</S.Message>
+                )}
+            </S.PointsList>
+            <S.HorizontalLine />
+            <S.Button onClick={() => navigate(-1)}>돌아가기</S.Button>
+        </S.Container>
     );
 };
 
