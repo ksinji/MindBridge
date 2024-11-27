@@ -35,43 +35,17 @@ public class Users {
     @Column(name = "user_walk_goal")
     private Integer userWalkGoal;
 
+    @Column(name = "user_point")
+    private int userPoint;  // 사용자 포인트
 
-    public Integer getUserId() {
-        return userId;
+
+    public int getUserPoint() {
+        return userPoint;
     }
 
-    public String getWatchId() {
-        return watchId;
+    public void setUserPoint(int userPoint) {
+        this.userPoint = userPoint;
     }
-
-    public String getUserName() {
-        return userName;
-    }
-
-    public String getUserGender() {
-        return userGender;
-    }
-
-    public String getUserAge() {
-        return userAge;
-    }
-
-    public String getUserLocation() {
-        return userLocation;
-    }
-
-    public String getUserPassword() {
-        return userPassword;
-    }
-
-    public String getUserEmail() {
-        return userEmail;
-    }
-
-    public Integer getUserWalkGoal() {
-        return userWalkGoal;
-    }
-
 }
 
 
