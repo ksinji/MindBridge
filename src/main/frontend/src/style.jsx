@@ -1,15 +1,16 @@
-import { styled } from "styled-components";
+// style.jsx
+import styled from "styled-components";
 
 export const Container = styled.div`
   display: flex;
   flex-direction: column;
   align-items: center;
-  justify-content: center; /* 추가: 수직 정렬 */
-  min-height: 100vh; /* 수정: 화면 전체 높이 */
-  width: 100%; /* 수정: 부모 컨테이너의 전체 너비 */
-  background-color: #f0f8ff;
-  padding: 20px; /* 추가: 컨테이너 여백 */
-  box-sizing: border-box; /* 추가: 패딩 포함 크기 계산 */
+
+  min-height: 100vh;
+  width: 100%;
+  background-color: #fff;
+  padding: 40px 400px;
+  box-sizing: border-box;
 `;
 
 export const Title = styled.h1`
@@ -25,8 +26,52 @@ export const ButtonContainer = styled.div`
   margin-top: 20px; /* 수정: 컨테이너 간 여백 */
 `;
 
+
+export const Message = styled.p`
+  margin-top: 20px;
+  padding: 10px;
+  color: #888888;
+  font-size: 24px;
+  text-align: center;
+`;
+
+export const PointsList = styled.div`
+  padding: 20px;
+  width: 90%;
+`;
+
+export const PointItem = styled.p`
+  margin-bottom: 15px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  font-size: 16px;
+`;
+
+export const PointDescription = styled.span`
+  flex: 1; /* 남은 공간을 차지하도록 설정 */
+  padding: 0 40px; /* 내용과 간격 조정 */
+  color: black;
+  font-size: 20px;
+`;
+
+export const TransactionType = styled.span`
+  display: inline-block;
+  padding: 5px 10px;
+  border-radius: 8px;
+  color: white;
+  margin-right: 10px;
+  background-color: ${props => (props.type === "purchase" ? "#ff6b6b" : "#4db8ff")};
+`;
+
+export const PointValue = styled.span`
+  color: ${props => (props.type === "purchase" ? "#ff6b6b" : "#4db8ff")};
+  font-weight: bold;
+  font-size: 20px;
+`;
+
 export const Button = styled.button`
-  background-color: #4caf50;
+  background-color: #333;
   color: white;
   border: none;
   padding: 10px 20px;
@@ -37,14 +82,12 @@ export const Button = styled.button`
   transition: background-color 0.3s ease;
 
   &:hover {
-    background-color: #448844;
+    background-color: #666666;
   }
 `;
 
-export const Message = styled.p`
-  margin-top: 20px;
-  padding: 10px;
-  color: #447744;
-  font-size: 24px;
-  text-align: center; /* 추가: 텍스트 중앙 정렬 */
+export const HorizontalLine = styled.hr`
+  width: 100%;
+  border: 1px solid #ccc; /* 가로선 색상 */
+  margin: 20px 0; /* 가로선 위아래 여백 */
 `;
