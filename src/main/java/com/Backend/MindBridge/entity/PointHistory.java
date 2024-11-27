@@ -38,4 +38,28 @@ public class PointHistory {
         this.points = points;
         this.createdAt = createdAt;
     }
+
+    public Integer getTransactionId() {
+        return transactionId;
+    }
+
+    public Integer getUserId() {
+        return userId;
+    }
+
+    public String getTransactionType() {
+        return transactionType;
+    }
+
+    public String getTransactionDescription() {
+        return transactionDescription;
+    }
+
+    public Integer getPoints() {
+        return points;
+    }
+
+    public LocalDateTime getCreatedAt() {
+        return createdAt;
+    }
 }
