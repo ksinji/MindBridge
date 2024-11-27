@@ -26,6 +26,9 @@ public class StoreController {
 
     @PostMapping("/store/purchase")
     public String purchaseItem(@RequestParam Integer userId, @RequestParam Integer itemId) {
+        if (userId == null || itemId == null) {
+            throw new RuntimeException("사용자 ID 또는 아이템 ID가 누락되었습니다.");
+        }
         return storeService.purchaseItem(userId, itemId);  // 포인트 기록 저장
     }
 }

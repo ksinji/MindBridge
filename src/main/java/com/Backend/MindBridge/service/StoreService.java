@@ -28,7 +28,6 @@ public class StoreService {
         this.userRepository = userRepository;
     }
 
-
     // 상품 목록과 사용자의 포인트를 함께 반환하는 메소드
     public StoreResponseDTO getStoreInfo(Integer userId) {
         // 사용자 포인트 조회
@@ -41,6 +40,7 @@ public class StoreService {
         // 상품 목록 조회
         List<StoreDTO> products = shopItemRepository.findAll().stream()
                 .map(item -> new StoreDTO(
+                        item.getId(),  // ID 추가
                         item.getCommonCode().getCodeName(),
                         item.getPrice()
                 ))

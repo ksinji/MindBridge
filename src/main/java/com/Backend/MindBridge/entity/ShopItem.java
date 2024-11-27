@@ -29,4 +29,6 @@ public class ShopItem {
     public Integer getPrice() {
         return price;
     }
+
+    public Integer getId() { return itemId; }
 }
