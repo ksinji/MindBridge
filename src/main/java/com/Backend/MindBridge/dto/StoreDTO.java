@@ -2,14 +2,18 @@ package com.Backend.MindBridge.dto;
 
 public class StoreDTO {
     private String name;
-    private int price;
+    private Integer price;
 
-    public StoreDTO(String name, int price) {
+    public StoreDTO(String name, Integer price) {
         this.name = name;
         this.price = price;
     }
 
     public String getName() {
         return name;
+    }
+
+    public Integer getPrice() {
+        return price;
     }
 }

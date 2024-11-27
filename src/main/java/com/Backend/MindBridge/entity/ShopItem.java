@@ -9,16 +9,16 @@ public class ShopItem {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "item_id")
-    private Long itemId;
+    private Integer itemId;
 
     @ManyToOne
     @JoinColumn(name = "code_id", referencedColumnName = "code_id")
     private CommonCode commonCode;
 
     @Column(name = "price")
-    private int price;
+    private Integer price;
 
-    public Long getItemId() {
+    public Integer getItemId() {
         return itemId;
     }
 
@@ -26,7 +26,7 @@ public class ShopItem {
         return commonCode;
     }
 
-    public int getPrice() {
+    public Integer getPrice() {
         return price;
     }
 }
