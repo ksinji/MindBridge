@@ -1,3 +1,5 @@
+//Main.jsx
+
 import React from "react";
 import { createRoot } from "react-dom/client";
 import Sample from './Sample.jsx';
@@ -10,5 +12,3 @@ root.render(
         <Sample />
     </React.StrictMode>
 );
-
-//유호준 수정 테스트
