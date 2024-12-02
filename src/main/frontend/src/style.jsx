@@ -9,7 +9,7 @@ export const Container = styled.div`
   min-height: 100vh;
   width: 100%;
   background-color: #fff;
-  padding: 40px 400px;
+  padding: 40px 200px;
   box-sizing: border-box;
 `;
 
@@ -17,6 +17,12 @@ export const Title = styled.h1`
   color: #333;
   margin-bottom: 20px;
 `;
+
+export const Date = styled.div`
+  color: #777;
+  font-size: 24px;
+  margin-bottom: 40px;
+`
 
 export const ButtonContainer = styled.div`
   display: flex;
@@ -130,4 +136,106 @@ export const PurchaseButton = styled.button`
   &:hover {
     background-color: ${props => (props.disabled ? "#ccc" : "#546491")};
   }
+`;
+
+export const HorizontalContainer = styled.div`
+  display: flex;
+  gap: 80px;
+  margin-bottom: 40px;
+`;
+
+export const VerticalContainer = styled.div`
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  align-items: center;
+`;
+
+export const MissionContainer = styled.div`
+    margin-bottom: 15px;
+    display: flex;
+    flex-direction: vertical;
+    align-items: center;
+    justify-content: space-between;
+`;
+
+export const MissionDetails = styled.div`
+    display: flex;
+    flex-direction: column;
+    margin-bottom: 10px;
+`;
+
+export const CompleteButton = styled.span`
+  display: inline-block;
+  padding: 5px 10px;
+  border-radius: 8px;
+  color: white;
+  margin: 5px 10px;
+  background-color: ${props => (props.type === "달성" ? "#689BF3" : "#999")};
+`;
+
+
+export const RecommendedExercise = styled.div`
+  margin: 20px 0;
+  font-size: 18px;
+  display: flex;
+  flex-direction: column; // 세로 정렬
+  margin-top: 10px; // 필요시 여백 추가
+`;
+
+export const GraphContainer = styled.div`
+  display: flex;
+  justify-content: space-around;
+  margin-top: 20px;
+  gap: 60px;
+`;
+
+export const NavigationButtons = styled.div`
+  margin-top: 20px;
+  display: flex;
+  justify-content: space-between;
+`;
+
+export const NavigationButton = styled.div`
+  background-color: #888;
+  color: white;
+  border: none;
+  padding: 10px 20px;
+  font-size: 16px;
+  cursor: pointer;
+  margin: 10px;
+  border-radius: 5px;
+  transition: background-color 0.3s ease;
+
+  &:hover {
+    background-color: #555;
+  }
+`;
+
+export const SubTitle = styled.div`
+  font-size: 20px;
+  padding: 5px 0px 20px 0px;
+  font-weight: bold;
+  text-align: center;
+`;
+
+export const ChartWrapper = styled.div`
+  width: 48%;
+`;
+
+export const ChartTitle = styled.div`
+  text-align: center;
+  margin-bottom: 10px;
+  font-size: 18px;
+  font-weight: bold;
+`;
+
+export const WeeklyBox = styled.div`
+  border: 1px solid #ccc;
+  padding: 20px;
+  margin: 20px 0;
+  border-radius: 8px; 
+  width: 100%; 
+  height: 180px;
+  align-items: center;
 `;

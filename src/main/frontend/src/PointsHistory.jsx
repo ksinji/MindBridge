@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
-import * as S from "./style.jsx"; // 스타일 파일 경로 확인
+import * as S from "./style.jsx";
 
 const PointsHistory = () => {
     const navigate = useNavigate();
