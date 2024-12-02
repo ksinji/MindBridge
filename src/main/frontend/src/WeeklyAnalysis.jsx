@@ -1,75 +1,155 @@
-import React from "react";
-import { LineChart, Line, BarChart, Bar, XAxis, YAxis, Tooltip, CartesianGrid } from "recharts";
-import { useNavigate } from "react-router-dom"; // useNavigate 추가
+import React, { useState } from "react";
+import { LineChart, Line, BarChart, Bar, XAxis, YAxis, Tooltip, CartesianGrid, Legend } from "recharts";
+import { useNavigate } from "react-router-dom";
+import * as S from "./style.jsx";
 
-// 데이터
-const heartRateData = [
-    { day: "월", bpm: 75 },
-    { day: "화", bpm: 80 },
-    { day: "수", bpm: 78 },
-    { day: "목", bpm: 82 },
-    { day: "금", bpm: 76 },
-    { day: "토", bpm: 85 },
-    { day: "일", bpm: 77 },
-];
+const generateDummyData = () => {
+    const days = ["월", "화", "수", "목", "금", "토", "일"];
+    const heartRateData = [];
+    const stepsData = [];
+    const activityData = [];
+    const illuminationData = [];
 
-const stepsData = [
-    { day: "월", steps: 10000 },
-    { day: "화", steps: 12000 },
-    { day: "수", steps: 9000 },
-    { day: "목", steps: 11000 },
-    { day: "금", steps: 9500 },
-    { day: "토", steps: 15000 },
-    { day: "일", steps: 13000 },
-];
+    for (let i = 0; i < 7; i++) {
+        heartRateData.push({ day: days[i], bpm: 70 + Math.floor(Math.random() * 15) });
+        stepsData.push({ day: days[i], steps: 3000 + Math.floor(Math.random() * 5000) });
+        activityData.push({ day: days[i], activeTime: 30 + Math.floor(Math.random() * 60) });
+        illuminationData.push({ day: days[i], illumination: 40 + Math.random() * 40 });
+    }
+
+    return { heartRateData, stepsData, activityData, illuminationData };
+};
 
 const WeeklyAnalysis = () => {
-    const navigate = useNavigate(); // React Router의 useNavigate 훅 사용
+    const navigate = useNavigate();
+    const [currentDate, setCurrentDate] = useState(new Date());
+
+    const getWeekRange = (date) => {
+        const start = new Date(date);
+        start.setDate(start.getDate() - start.getDay() - 6);
+        const end = new Date(start);
+        end.setDate(start.getDate() + 6);
+        return { start, end };
+    };
+
+    const { start: weekStart, end: weekEnd } = getWeekRange(currentDate);
+    const today = new Date();
+    const { heartRateData, stepsData, activityData, illuminationData } = generateDummyData();
+
+    const formatDate = (date) =>
+        `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, "0")}-${String(date.getDate()).padStart(2, "0")}`;
+
+    const prevWeek = () => setCurrentDate(new Date(currentDate.setDate(currentDate.getDate() - 7)));
+    const nextWeek = () => {
+        const nextStartDate = new Date(currentDate);
+        nextStartDate.setDate(currentDate.getDate() + 7);
+        if (nextStartDate <= today) {
+            setCurrentDate(nextStartDate);
+        }
+    };
+
+    const missions = [
+        { name: "주간 걷기 미션", description: "주간 50,000보 걷기", points: 500, completed: false },
+        { name: "랜덤 미션", description: "하루에 30분 이상 활동하기", points: 300, completed: true },
+    ];
+
+    const recommendedExercise = {
+        name: "중강도 운동",
+        description: "요가, 걷기 30분, 자전거 타기"
+    };
 
     return (
-        <div>
-            <h1>📊 주간 분석</h1>
+        <S.Container>
+            <S.Title>📊 주간 분석</S.Title>
+            <S.Date>{formatDate(weekStart)} ~ {formatDate(weekEnd)}</S.Date>
 
-            <div>
-                <h2>주간 심박수</h2>
-                <LineChart width={600} height={300} data={heartRateData}>
-                    <CartesianGrid strokeDasharray="3 3" />
-                    <XAxis dataKey="day" />
-                    <YAxis />
-                    <Tooltip />
-                    <Line type="monotone" dataKey="bpm" stroke="#8884d8" strokeWidth={2} />
-                </LineChart>
-            </div>
+            <S.HorizontalContainer>
+                <S.VerticalContainer>
+                    <S.WeeklyBox>
+                    <S.SubTitle>이번 주 미션</S.SubTitle>
+                    {missions.map((mission, index) => (
+                        <S.MissionContainer key={index}>
+                            <S.MissionDetails>
+                                <strong>{mission.name}</strong>
+                                <span>{mission.description}</span>
+                            </S.MissionDetails>
+                            <S.CompleteButton type={mission.completed ? "달성" : "미달성"}>
+                                {mission.completed ? "달성" : "미달성"}
+                            </S.CompleteButton>
+                        </S.MissionContainer>
+                    ))}</S.WeeklyBox>
+                </S.VerticalContainer>
 
-            <div>
-                <h2>주간 걸음수</h2>
-                <BarChart width={600} height={300} data={stepsData}>
-                    <CartesianGrid strokeDasharray="3 3" />
-                    <XAxis dataKey="day" />
-                    <YAxis />
-                    <Tooltip />
-                    <Bar dataKey="steps" fill="#82ca9d" />
-                </BarChart>
-            </div>
+                <S.VerticalContainer>
+                    <S.WeeklyBox>
+                        <S.SubTitle>이번 주 추천 운동</S.SubTitle>
+                        <S.RecommendedExercise>
+                            <strong>{recommendedExercise.name}</strong>
+                            <span>{recommendedExercise.description}</span>
+                        </S.RecommendedExercise>
+                    </S.WeeklyBox>
+                </S.VerticalContainer>
+            </S.HorizontalContainer>
 
-            {/* 돌아가기 버튼 추가 */}
-            <div style={{ marginTop: "20px" }}>
-                <button
-                    onClick={() => navigate(-1)} // 이전 페이지로 이동
-                    style={{
-                        padding: "10px 20px",
-                        fontSize: "16px",
-                        color: "white",
-                        backgroundColor: "#007bff",
-                        border: "none",
-                        borderRadius: "5px",
-                        cursor: "pointer",
-                    }}
-                >
-                    돌아가기
-                </button>
-            </div>
-        </div>
+            <S.GraphContainer>
+                <S.ChartWrapper>
+                    <S.ChartTitle>최고 심박수</S.ChartTitle>
+                    <LineChart width={400} height={250} data={heartRateData}>
+                        <CartesianGrid strokeDasharray="3 3" />
+                        <XAxis dataKey="day" />
+                        <YAxis />
+                        <Tooltip />
+                        <Legend />
+                        <Line type="monotone" dataKey="bpm" stroke="#3B73E4" strokeWidth={2} />
+                    </LineChart>
+                </S.ChartWrapper>
+
+                <S.ChartWrapper>
+                    <S.ChartTitle>걸음수</S.ChartTitle>
+                    <BarChart width={400} height={250} data={stepsData}>
+                        <CartesianGrid strokeDasharray="3 3" />
+                        <XAxis dataKey="day" />
+                        <YAxis />
+                        <Tooltip />
+                        <Legend />
+                        <Bar dataKey="steps" fill="#689BF3" />
+                    </BarChart>
+                </S.ChartWrapper>
+            </S.GraphContainer>
+
+            <S.GraphContainer>
+                <S.ChartWrapper>
+                    <S.ChartTitle>활동 시간</S.ChartTitle>
+                    <BarChart width={400} height={250} data={activityData}>
+                        <CartesianGrid strokeDasharray="3 3" />
+                        <XAxis dataKey="day" />
+                        <YAxis />
+                        <Tooltip />
+                        <Legend />
+                        <Bar dataKey="activeTime" fill="#4169E1" />
+                    </BarChart>
+                </S.ChartWrapper>
+
+                <S.ChartWrapper>
+                    <S.ChartTitle>조도</S.ChartTitle>
+                    <LineChart width={400} height={250} data={illuminationData}>
+                        <CartesianGrid strokeDasharray="3 3" />
+                        <XAxis dataKey="day" />
+                        <YAxis />
+                        <Tooltip />
+                        <Legend />
+                        <Line type="monotone" dataKey="illumination" stroke="#8884d8" strokeWidth={2} />
+                    </LineChart>
+                </S.ChartWrapper>
+            </S.GraphContainer>
+
+            <S.NavigationButtons>
+                <S.NavigationButton onClick={prevWeek}>◀ 이전 주</S.NavigationButton>
+                <S.NavigationButton onClick={nextWeek} disabled={weekEnd >= today}>다음 주 ▶</S.NavigationButton>
+            </S.NavigationButtons>
+
+            <S.Button onClick={() => navigate(-1)}>돌아가기</S.Button>
+        </S.Container>
     );
 };
 
