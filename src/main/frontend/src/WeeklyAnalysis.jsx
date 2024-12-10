@@ -1,8 +1,24 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
-import { LineChart, Line, BarChart, Bar, XAxis, YAxis, Tooltip, CartesianGrid, Legend } from "recharts";
+import {LineChart, Line, BarChart, Bar, XAxis, YAxis, Tooltip, CartesianGrid, Legend, ReferenceLine} from "recharts";
 import { useNavigate } from "react-router-dom";
 import * as S from "./style.jsx";
+
+const calculateAverage = (data, key) => {
+    const total = data.reduce((sum, item) => sum + item[key], 0);
+    return total / data.length;
+};
+
+const missionDescriptions = [
+    { name: "주간 걷기 미션", descriptions: ["주간 50,000보 걷기", "주간 10,000보 걷기", "주간 70,000보 걷기"] },
+    { name: "랜덤 미션", descriptions: ["하루에 30분 이상 활동하기", "하루에 1시간 운동하기", "하루에 10,000보 걷기"] },
+];
+
+const exercises = [
+    { intensity: "저강도 운동", description: "산책, 스트레칭, 자전거 타기 20분" },
+    { intensity: "중강도 운동", description: "요가, 걷기 30분, 자전거 타기 40분" },
+    { intensity: "고강도 운동", description: "달리기, 인터벌 트레이닝 30분" },
+];
 
 const WeeklyAnalysis = () => {
     const navigate = useNavigate();
@@ -11,6 +27,7 @@ const WeeklyAnalysis = () => {
     const [healthData, setHealthData] = useState([]);
     const [lastDate, setLastDate] = useState(new Date());
     const [weekRange, setWeekRange] = useState({ start: new Date(), end: new Date() });
+    const [recommendedExercise, setRecommendedExercise] = useState(exercises[1]); // 중강도 운동 초기화
 
     const watchId = "1234567890123456"; // 고정된 watchId
 
@@ -50,6 +67,9 @@ const WeeklyAnalysis = () => {
         prevStartDate.setDate(weekRange.start.getDate() - 7);
         const { start, end } = getWeekRange(prevStartDate);
         setWeekRange({ start, end });
+
+        updateExercise();
+        window.scrollTo({ top: 0, behavior: "smooth" });
     };
 
     // 다음 주 버튼
@@ -60,6 +80,9 @@ const WeeklyAnalysis = () => {
             const { start, end } = getWeekRange(nextStartDate);
             setWeekRange({ start, end });
         }
+
+        updateExercise();
+        window.scrollTo({ top: 0, behavior: "smooth" });
     };
 
     // 주 범위가 변경될 때 데이터 조회
@@ -67,14 +90,17 @@ const WeeklyAnalysis = () => {
         fetchHealthData(weekRange.start, weekRange.end);
     }, [weekRange]);
 
-    const missions = [
-        { name: "주간 걷기 미션", description: "주간 50,000보 걷기", points: 500, completed: false },
-        { name: "랜덤 미션", description: "하루에 30분 이상 활동하기", points: 300, completed: true },
-    ];
+    // 추천 운동 및 미션 내용 변경 함수
+    const updateExercise = () => {
+        const exerciseIndex = Math.floor(Math.random() * 3); // 0, 1, 2 중 랜덤 선택
+        setRecommendedExercise(exercises[exerciseIndex]);
+    };
 
-    const recommendedExercise = {
-        name: "중강도 운동",
-        description: "요가, 걷기 30분, 자전거 타기"
+    // 랜덤 미션 설명 설정 함수
+    const getRandomMissionDescription = (missionName) => {
+        const mission = missionDescriptions.find(m => m.name === missionName);
+        const randomIndex = Math.floor(Math.random() * mission.descriptions.length);
+        return mission.descriptions[randomIndex];
     };
 
     // 데이터 변환 함수
@@ -90,13 +116,18 @@ const WeeklyAnalysis = () => {
             heartRateData.push({ day: dayName, bpm: item.maxHeartRate });
             stepsData.push({ day: dayName, steps: item.stepCount });
             activityData.push({ day: dayName, activeTime: item.activityDuration });
-            illuminationData.push({ day: dayName, illumination: item.maxIllu * 100 }); // Illumination 비율을 100으로 환산
+            illuminationData.push({ day: dayName, illumination: item.maxIllu });
         });
 
         return { heartRateData, stepsData, activityData, illuminationData };
     };
 
     const { heartRateData, stepsData, activityData, illuminationData } = transformData(healthData);
+
+    const heartRateAvg = heartRateData.length > 0 ? calculateAverage(heartRateData, "bpm") : 0;
+    const stepsAvg = stepsData.length > 0 ? calculateAverage(stepsData, "steps") : 0;
+    const activityAvg = activityData.length > 0 ? calculateAverage(activityData, "activeTime") : 0;
+    const illuminationAvg = illuminationData.length > 0 ? calculateAverage(illuminationData, "illumination") : 0;
 
     return (
         <S.Container>
@@ -110,14 +141,14 @@ const WeeklyAnalysis = () => {
                 <S.VerticalContainer>
                     <S.WeeklyBox>
                         <S.SubTitle>이번 주 미션</S.SubTitle>
-                        {missions.map((mission, index) => (
+                        {missionDescriptions.map((mission, index) => (
                             <S.MissionContainer key={index}>
                                 <S.MissionDetails>
                                     <strong>{mission.name}</strong>
-                                    <span>{mission.description}</span>
+                                    <span>{getRandomMissionDescription(mission.name)}</span> {/* 랜덤 설명 */}
                                 </S.MissionDetails>
-                                <S.CompleteButton type={mission.completed ? "달성" : "미달성"}>
-                                    {mission.completed ? "달성" : "미달성"}
+                                <S.CompleteButton type={missionDescriptions.completed ? "달성" : "미달성"}>
+                                    {missionDescriptions.completed ? "달성" : "미달성"}
                                 </S.CompleteButton>
                             </S.MissionContainer>
                         ))}
@@ -128,7 +159,7 @@ const WeeklyAnalysis = () => {
                     <S.WeeklyBox>
                         <S.SubTitle>이번 주 추천 운동</S.SubTitle>
                         <S.RecommendedExercise>
-                            <strong>{recommendedExercise.name}</strong>
+                            <strong>{recommendedExercise.intensity}</strong>
                             <span>{recommendedExercise.description}</span>
                         </S.RecommendedExercise>
                     </S.WeeklyBox>
@@ -146,6 +177,7 @@ const WeeklyAnalysis = () => {
                             <Tooltip />
                             <Legend />
                             <Line type="monotone" dataKey="bpm" stroke="#3B73E4" strokeWidth={2} />
+                            <ReferenceLine y={heartRateAvg} stroke="maroon" />
                         </LineChart>
                     ) : (
                         <div>헬스 데이터가 없습니다.</div>
@@ -162,6 +194,7 @@ const WeeklyAnalysis = () => {
                             <Tooltip />
                             <Legend />
                             <Bar dataKey="steps" fill="#689BF3" />
+                            <ReferenceLine y={stepsAvg} stroke="maroon"/>
                         </BarChart>
                     ) : (
                         <div>헬스 데이터가 없습니다.</div>
@@ -180,6 +213,7 @@ const WeeklyAnalysis = () => {
                             <Tooltip />
                             <Legend />
                             <Bar dataKey="activeTime" fill="#4169E1" />
+                            <ReferenceLine y={activityAvg} stroke="maroon"/>
                         </BarChart>
                     ) : (
                         <div>헬스 데이터가 없습니다.</div>
@@ -196,6 +230,7 @@ const WeeklyAnalysis = () => {
                             <Tooltip />
                             <Legend />
                             <Line type="monotone" dataKey="illumination" stroke="#8884d8" strokeWidth={2} />
+                            <ReferenceLine y={illuminationAvg} stroke="maroon"/>
                         </LineChart>
                     ) : (
                         <div>헬스 데이터가 없습니다.</div>
